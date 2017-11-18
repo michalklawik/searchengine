@@ -4,6 +4,7 @@ import com.infoshareacademy.searchengine.dao.UserRepositoryDao;
 import com.infoshareacademy.searchengine.dao.UserRepositoryDaoBean;
 import com.infoshareacademy.searchengine.domain.User;
 
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,8 +15,11 @@ import java.io.PrintWriter;
 
 @WebServlet("/find-user-by-id")
 public class FindUserByIdServlet extends HttpServlet {
+
+    @EJB
+    private UserRepositoryDao daoBean;
+
     protected void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserRepositoryDao daoBean = new UserRepositoryDaoBean();
         PrintWriter writer = resp.getWriter();
         if (req.getParameter("id") == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -26,8 +30,7 @@ public class FindUserByIdServlet extends HttpServlet {
         if (user == null) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
-        } else {
-            writer.println("<!DOCTYPE html><html><body>Hello " + user.getName() + "</body></html>");
         }
+        writer.println(user.getName());
     }
 }
