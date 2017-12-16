@@ -1,5 +1,6 @@
 <html>
 <body>
-<h2>Hello World!</h2>
+<h2>Aplikacja MK</h2>
+<%@include file="menu.jsp"%>
 </body>
 </html>

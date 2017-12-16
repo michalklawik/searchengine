@@ -1,8 +1,13 @@
 package com.infoshareacademy.searchengine.servlets;
 
-import com.infoshareacademy.searchengine.dao.UserRepositoryDao;
-import com.infoshareacademy.searchengine.dao.UserRepositoryDaoBean;
+import com.infoshareacademy.searchengine.CDIBeans.MaxPulse;
+import com.infoshareacademy.searchengine.dao.SearchStatisticsDao;
+import com.infoshareacademy.searchengine.dao.UsersRepositoryDao;
+import com.infoshareacademy.searchengine.dao.UsersRepositoryDaoBean;
+import com.infoshareacademy.searchengine.dao.UsersRepositoryDao;
+import com.infoshareacademy.searchengine.domain.Gender;
 import com.infoshareacademy.searchengine.domain.User;
+import com.infoshareacademy.searchengine.repository.UsersRepository;
 
 import javax.ejb.EJB;
 import javax.inject.Inject;
@@ -18,7 +23,13 @@ import java.io.PrintWriter;
 public class FindUserByIdServlet extends HttpServlet {
 
     @Inject
-    private UserRepositoryDao daoBean;
+    private UsersRepositoryDao daoBean;
+
+    @EJB
+    SearchStatisticsDao statisticsRepositoryDao;
+
+    @Inject
+    private MaxPulse maxPulse;
 
     protected void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter writer = resp.getWriter();
@@ -32,6 +43,8 @@ public class FindUserByIdServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        writer.println(user.getName());
+
+        statisticsRepositoryDao.addSearchedUserToMap(user);
+        writer.println(user.getName() + " " + user.getSurname() + " - wyszukany: " + statisticsRepositoryDao.getSearchedUserMap().get(user));
     }
 }
